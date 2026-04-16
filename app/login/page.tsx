@@ -31,14 +31,14 @@ export default function LoginPage() {
       </h1>
 
       <input
-        className="border p-2 rounded text-black"
+        className="w-1/2 mx-auto p-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
 
       <input
-        className="border p-2 rounded text-black"
+        className="w-1/2 mx-auto p-3 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 outline-none"
         placeholder="Password"
         type="password"
         value={password}
@@ -47,7 +47,7 @@ export default function LoginPage() {
 
       <button
         onClick={handleLogin}
-        className="bg-blue-600 text-white p-2 rounded"
+        className="w-1/4 mx-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition"
       >
         Login
       </button>
