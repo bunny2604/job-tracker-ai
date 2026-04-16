@@ -1,40 +1,38 @@
 import { prisma } from '@/lib/db';
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 
 type JwtPayload = {
   userId: string;
 };
 
-// ✅ UPDATE
+// ✅ UPDATE APPLICATION
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const token = (await cookies()).get('token')?.value;
+    const { id } = await context.params;
+
+    const token = req.headers.get('authorization')?.split(' ')[1];
 
     if (!token) {
       return NextResponse.json({ error: 'No token' }, { status: 401 });
     }
 
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET!
-    ) as JwtPayload;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
     const body = await req.json();
 
     const updated = await prisma.application.updateMany({
-  where: {
-    id: params.id,
-    userId: decoded.userId,
-  },
-  data: {
-    status: body.status,
-  },
-});
+      where: {
+        id,
+        userId: decoded.userId,
+      },
+      data: {
+        status: body.status,
+      },
+    });
 
     return NextResponse.json(updated);
   } catch (err) {
@@ -43,27 +41,26 @@ export async function PUT(
   }
 }
 
-// ✅ DELETE
+// ✅ DELETE APPLICATION
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const token = (await cookies()).get('token')?.value;
+    const { id } = await context.params;
+
+    const token = req.headers.get('authorization')?.split(' ')[1];
 
     if (!token) {
       return NextResponse.json({ error: 'No token' }, { status: 401 });
     }
 
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET!
-    ) as JwtPayload;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
-    await prisma.application.delete({
+    await prisma.application.deleteMany({
       where: {
-        id: params.id,
-        userId: decoded.userId, // 🔐 prevents deleting others' data
+        id,
+        userId: decoded.userId,
       },
     });
 
