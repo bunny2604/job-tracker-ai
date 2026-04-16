@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function Signup() {
+export default function SignupPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -13,33 +15,50 @@ export default function Signup() {
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await res.json();
-    console.log(data);
-
-    alert('User created! Now login.');
-    window.location.href = '/login';
+    if (res.ok) {
+      router.push('/login');
+    }
   };
 
   return (
-    <div className="p-6 max-w-sm mx-auto flex flex-col gap-3">
-      <h1 className="text-xl font-bold">Signup</h1>
+    <div className="flex flex-col gap-4">
+
+      <h1 className="text-2xl font-bold text-center">
+        Create Account
+      </h1>
 
       <input
-        className="border p-2"
+        className="border p-2 rounded text-black"
         placeholder="Email"
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
 
       <input
-        className="border p-2"
-        type="password"
+        className="border p-2 rounded text-black"
         placeholder="Password"
+        type="password"
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
 
-      <button onClick={handleSignup} className="bg-black text-white p-2">
-        Signup
+      <button
+        onClick={handleSignup}
+        className="bg-green-600 text-white p-2 rounded"
+      >
+        Sign Up
       </button>
+
+      {/* CTA */}
+      <p className="text-center text-sm mt-4">
+        Already have an account?
+        <span
+          onClick={() => router.push('/login')}
+          className="text-blue-600 cursor-pointer ml-1 underline"
+        >
+          Login
+        </span>
+      </p>
     </div>
   );
 }
