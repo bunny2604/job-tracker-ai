@@ -13,13 +13,14 @@ export default function LoginPage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
+      credentials: 'include', // IMPORTANT for cookies
     });
 
-    const data = await res.json();
-
-    if (data.token) {
-      localStorage.setItem('token', data.token);
-      router.push('/applications');
+    if (res.ok) {
+      router.push('/applications'); // ✅ ALWAYS WORKS NOW
+      router.refresh(); // ensures SSR revalidation
+    } else {
+      alert('Login failed');
     }
   };
 
@@ -31,14 +32,14 @@ export default function LoginPage() {
       </h1>
 
       <input
-        className="border p-2 rounded text-black"
+        className="w-1/2 mx-auto p-3 border rounded-lg bg-white text-gray-900"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
 
       <input
-        className="border p-2 rounded text-black"
+        className="w-1/2 mx-auto p-3 border rounded-lg bg-white text-gray-900"
         placeholder="Password"
         type="password"
         value={password}
@@ -47,12 +48,11 @@ export default function LoginPage() {
 
       <button
         onClick={handleLogin}
-        className="bg-blue-600 text-white p-2 rounded"
+        className="w-1/4 mx-auto bg-blue-600 text-white py-2 rounded-lg"
       >
         Login
       </button>
 
-      {/* CTA */}
       <p className="text-center text-sm mt-4">
         Don’t have an account?
         <span
