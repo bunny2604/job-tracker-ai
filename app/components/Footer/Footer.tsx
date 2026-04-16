@@ -8,7 +8,7 @@ export default function Footer() {
 
         <div className="flex justify-center gap-4 mt-2">
           <a
-            href="https://github.com/YOUR_GITHUB"
+            href="https://github.com/bunny2604/job-tracker-ai.git"
             target="_blank"
             className="hover:underline"
           >
@@ -16,7 +16,7 @@ export default function Footer() {
           </a>
 
           <a
-            href="https://linkedin.com/in/YOUR_LINKEDIN"
+            href="https://www.linkedin.com/in/shashank-shaurabh-8524b0115"
             target="_blank"
             className="hover:underline"
           >

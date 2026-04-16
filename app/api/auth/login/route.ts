@@ -23,7 +23,18 @@ export async function POST(req: Request) {
 
     const token = signToken({ userId: user.id });
 
-    return NextResponse.json({ token });
+    const res = NextResponse.json({ success: true });
+
+    // ✅ SET COOKIE (THIS IS MISSING IN YOUR CODE)
+    res.cookies.set('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    return res;
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: 'Login failed' }, { status: 500 });

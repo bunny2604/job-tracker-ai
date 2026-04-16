@@ -1,19 +1,25 @@
 import { prisma } from '@/lib/db';
 import { NextResponse } from 'next/server';
-import { verifyToken } from '@/lib/auth';
+import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
+
+type JwtPayload = {
+  userId: string;
+};
 
 // ✅ CREATE
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-
-    const token = req.headers.get('authorization')?.split(' ')[1];
+    const cookieStore = cookies();
+    const token = (await cookieStore).get('token')?.value;
 
     if (!token) {
       return NextResponse.json({ error: 'No token' }, { status: 401 });
     }
 
-    const decoded: any = verifyToken(token);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+
+    const body = await req.json();
 
     const app = await prisma.application.create({
       data: {
@@ -26,21 +32,21 @@ export async function POST(req: Request) {
 
     return NextResponse.json(app);
   } catch (err) {
-    console.error(err);
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 }
 
 // ✅ READ
-export async function GET(req: Request) {
+export async function GET() {
   try {
-    const token = req.headers.get('authorization')?.split(' ')[1];
+    const cookieStore = cookies();
+    const token = (await cookieStore).get('token')?.value;
 
     if (!token) {
       return NextResponse.json({ error: 'No token' }, { status: 401 });
     }
 
-    const decoded: any = verifyToken(token);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
     const apps = await prisma.application.findMany({
       where: { userId: decoded.userId },
@@ -48,7 +54,7 @@ export async function GET(req: Request) {
     });
 
     return NextResponse.json(apps);
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 }

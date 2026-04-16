@@ -1,31 +1,40 @@
 import { prisma } from '@/lib/db';
 import { NextResponse } from 'next/server';
-import { verifyToken } from '@/lib/auth';
+import { cookies } from 'next/headers';
+import jwt from 'jsonwebtoken';
+
+type JwtPayload = {
+  userId: string;
+};
 
 // ✅ UPDATE
 export async function PUT(
   req: Request,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await context.params; // ✅ FIX
-
-    const token = req.headers.get('authorization')?.split(' ')[1];
+    const token = (await cookies()).get('token')?.value;
 
     if (!token) {
       return NextResponse.json({ error: 'No token' }, { status: 401 });
     }
 
-    verifyToken(token);
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET!
+    ) as JwtPayload;
 
     const body = await req.json();
 
-    const updated = await prisma.application.update({
-      where: { id },
-      data: {
-        status: body.status,
-      },
-    });
+    const updated = await prisma.application.updateMany({
+  where: {
+    id: params.id,
+    userId: decoded.userId,
+  },
+  data: {
+    status: body.status,
+  },
+});
 
     return NextResponse.json(updated);
   } catch (err) {
@@ -37,21 +46,25 @@ export async function PUT(
 // ✅ DELETE
 export async function DELETE(
   req: Request,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await context.params; // ✅ FIX
-
-    const token = req.headers.get('authorization')?.split(' ')[1];
+    const token = (await cookies()).get('token')?.value;
 
     if (!token) {
       return NextResponse.json({ error: 'No token' }, { status: 401 });
     }
 
-    verifyToken(token);
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET!
+    ) as JwtPayload;
 
     await prisma.application.delete({
-      where: { id },
+      where: {
+        id: params.id,
+        userId: decoded.userId, // 🔐 prevents deleting others' data
+      },
     });
 
     return NextResponse.json({ success: true });
@@ -59,4 +72,4 @@ export async function DELETE(
     console.error('DELETE ERROR:', err);
     return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
   }
-}   
+}

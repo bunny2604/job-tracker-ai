@@ -11,3 +11,13 @@ export function signToken(payload: any) {
 export function verifyToken(token: string) {
   return jwt.verify(token, JWT_SECRET);
 }
+
+export function getUserFromToken(token?: string) {
+  if (!token) return null;
+
+  try {
+    return jwt.verify(token, process.env.JWT_SECRET!);
+  } catch {
+    return null;
+  }
+}
