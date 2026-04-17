@@ -20,20 +20,21 @@ export default async function RootLayout({
   const user = getUserFromToken(token);
 
   return (
-    <html lang="en" className="h-full">
-      <body className="h-full flex flex-col bg-gray-50 text-gray-900">
+    <html lang="en">
+      <body className="min-h-screen flex flex-col bg-gray-50 text-gray-900">
 
-        {/* HEADER (always top) */}
+        {/* HEADER */}
         <Header user={user} />
 
-        {/* MAIN (fills remaining space) */}
-        <main className="flex-1 px-4 md:px-6 py-6">
+        {/* MAIN */}
+        <main className="flex-grow px-4 md:px-6 py-6">
           {children}
         </main>
 
-        {/* FOOTER (always bottom) */}
+        {/* FOOTER */}
         <Footer />
+
       </body>
     </html>
   );
-}
+} 

@@ -38,6 +38,8 @@ export default function ApplicationsClient({ initialApps }: Props) {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
 
+  const hasApps = apps.length > 0;
+
   // ---------------- FILTER ----------------
   const filteredApps = apps.filter((app) => {
     const matchesSearch =
@@ -57,7 +59,7 @@ export default function ApplicationsClient({ initialApps }: Props) {
     { name: 'Rejected', value: apps.filter(a => a.status === 'rejected').length },
   ];
 
-  const COLORS = ['#3b82f6', '#f59e0b', '#ef4444'];
+  const COLORS = ['#3b82f6', '#6366f1', '#ef4444']; // blue + indigo + red
 
   // ---------------- CREATE ----------------
   const handleSubmit = async () => {
@@ -85,7 +87,7 @@ export default function ApplicationsClient({ initialApps }: Props) {
     setApps((prev) => prev.filter((a) => a.id !== id));
   };
 
-  // ---------------- UPDATE STATUS ----------------
+  // ---------------- UPDATE ----------------
   const handleStatusChange = async (id: string, newStatus: string) => {
     await fetch(`/api/applications/${id}`, {
       method: 'PUT',
@@ -100,7 +102,7 @@ export default function ApplicationsClient({ initialApps }: Props) {
     );
   };
 
-  // ---------------- AI INSIGHT ----------------
+  // ---------------- AI ----------------
   const generateInsight = async (app: Application) => {
     setLoadingId(app.id);
 
@@ -117,7 +119,7 @@ export default function ApplicationsClient({ initialApps }: Props) {
     setLoadingId(null);
   };
 
-  // ---------------- EXPORT CSV ----------------
+  // ---------------- EXPORT ----------------
   const exportCSV = () => {
     const headers = ['Company', 'Role', 'Status'];
     const rows = apps.map((a) =>
@@ -139,40 +141,41 @@ export default function ApplicationsClient({ initialApps }: Props) {
 
   const getStatusColor = (status: string) => {
     if (status === 'applied')
-      return 'bg-blue-100 text-blue-700 border border-blue-300';
+      return 'bg-blue-100 text-blue-700 border border-blue-200';
     if (status === 'interview')
-      return 'bg-yellow-100 text-yellow-800 border border-yellow-300';
+      return 'bg-indigo-100 text-indigo-700 border border-indigo-200';
     if (status === 'rejected')
-      return 'bg-red-100 text-red-700 border border-red-300';
+      return 'bg-red-100 text-red-700 border border-red-200';
     return 'bg-gray-100 text-gray-700';
   };
 
-  // ---------------- UI ----------------
   return (
     <div className="max-w-6xl mx-auto">
 
-      <h1 className="text-4xl font-bold mb-6">
+      <h1 className="text-4xl font-bold mb-6 text-blue-700">
         Job Applications Dashboard
       </h1>
 
       {/* CHART */}
-      <div className="bg-white p-6 rounded-xl shadow mb-6">
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie data={chartData} dataKey="value" nameKey="name" outerRadius={100}>
-                {chartData.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+      {hasApps && (
+        <div className="bg-blue-50 p-6 rounded-xl shadow mb-6 border border-blue-100">
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={chartData} dataKey="value" nameKey="name" outerRadius={100}>
+                  {chartData.map((_, i) => (
+                    <Cell key={i} fill={COLORS[i]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* SEARCH */}
-      <div className="bg-white p-4 rounded-xl shadow mb-6 flex gap-3">
+      <div className="bg-blue-50 p-4 rounded-xl shadow mb-6 flex gap-3 border border-blue-100">
         <input
           className="border p-2 rounded w-full"
           value={search}
@@ -193,57 +196,80 @@ export default function ApplicationsClient({ initialApps }: Props) {
       </div>
 
       {/* FORM */}
-      <div className="bg-white p-6 rounded-xl shadow mb-10">
-        <div className="grid md:grid-cols-3 gap-4">
+      {/* FORM */}
+<div className="bg-blue-50 p-6 rounded-xl shadow mb-10 border border-blue-100">
+  <div className="grid md:grid-cols-3 gap-6">
 
-          <input
-            className="border p-2 rounded"
-            placeholder="Company"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
-          />
+    {/* COMPANY */}
+    <div className="flex flex-col gap-1">
+      <label className="text-sm font-medium text-blue-900">
+        Company
+      </label>
+      <input
+        className="border p-2 rounded"
+        placeholder="Enter company name"
+        value={company}
+        onChange={(e) => setCompany(e.target.value)}
+      />
+    </div>
 
-          <input
-            className="border p-2 rounded"
-            placeholder="Role"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-          />
+    {/* ROLE */}
+    <div className="flex flex-col gap-1">
+      <label className="text-sm font-medium text-blue-900">
+        Role
+      </label>
+      <input
+        className="border p-2 rounded"
+        placeholder="Enter job role"
+        value={role}
+        onChange={(e) => setRole(e.target.value)}
+      />
+    </div>
 
-          <select
-            className="border p-2 rounded"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option value="applied">Applied</option>
-            <option value="interview">Interview</option>
-            <option value="rejected">Rejected</option>
-          </select>
+    {/* STATUS */}
+    <div className="flex flex-col gap-1">
+      <label className="text-sm font-medium text-blue-900">
+        Status
+      </label>
+      <select
+        className="border p-2 rounded"
+        value={status}
+        onChange={(e) => setStatus(e.target.value)}
+      >
+        <option value="applied">Applied</option>
+        <option value="interview">Interview</option>
+        <option value="rejected">Rejected</option>
+      </select>
+    </div>
 
-        </div>
+  </div>
 
-        <button
-          onClick={handleSubmit}
-          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Add Application
-        </button>
-      </div>
+  <button
+    onClick={handleSubmit}
+    className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+  >
+    Add Application
+  </button>
+</div>
 
+      {/* EXPORT */}
       <button
         onClick={exportCSV}
-        className="mb-6 bg-green-600 text-white px-4 py-2 rounded"
+        className="mb-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
       >
         Export CSV
       </button>
 
       {/* GRID */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredApps.map((app) => (
-          <div key={app.id} className="bg-white p-5 rounded-xl shadow border">
 
-            <p className="font-semibold">{app.company}</p>
-            <p className="text-sm">{app.role}</p>
+        {filteredApps.map((app) => (
+          <div
+            key={app.id}
+            className="bg-blue-50 p-5 rounded-xl shadow border border-blue-100 hover:shadow-lg transition"
+          >
+            <p className="font-semibold text-blue-900">{app.company}</p>
+            <p className="text-sm text-gray-600">{app.role}</p>
 
             <span className={`text-xs px-2 py-1 rounded ${getStatusColor(app.status)}`}>
               {app.status}
@@ -265,7 +291,7 @@ export default function ApplicationsClient({ initialApps }: Props) {
 
               <button
                 onClick={() => generateInsight(app)}
-                className="bg-purple-600 text-white text-xs px-3 py-1 rounded"
+                className="bg-indigo-600 text-white text-xs px-3 py-1 rounded"
               >
                 {loadingId === app.id ? 'Thinking...' : 'AI Insight'}
               </button>
@@ -293,7 +319,7 @@ export default function ApplicationsClient({ initialApps }: Props) {
 
           <div className="bg-white p-6 rounded-xl z-50 w-[400px]">
             <div className="flex justify-between">
-              <h2 className="font-bold">AI Insight</h2>
+              <h2 className="font-bold text-blue-700">AI Insight</h2>
               <X onClick={() => setIsModalOpen(false)} />
             </div>
 

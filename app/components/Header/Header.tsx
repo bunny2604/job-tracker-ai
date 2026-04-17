@@ -16,17 +16,20 @@ export default function Header({ user }: { user: any }) {
   };
 
   return (
-    <header className="bg-white border-b shadow-sm">
+    <header className="bg-blue-900 text-white shadow-md">
       <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
 
-        <h1 className="text-xl font-bold">Job Tracker</h1>
+        {/* LOGO */}
+        <h1 className="text-xl font-bold">
+          Job Tracker
+        </h1>
 
-        {/* 🔥 INSTANT CORRECT STATE (NO FLICKER) */}
+        {/* USER ACTION */}
         {user && (
           <button
             onClick={handleLogout}
-            className="text-red-500"
-            style={{cursor: 'pointer'}}
+            className="text-white hover:text-gray-200 transition"
+            style={{ cursor: 'pointer' }}
           >
             Logout
           </button>
