@@ -78,6 +78,7 @@ export default function ApplicationsClient({ initialApps }: Props) {
   const handleDelete = async (id: string) => {
     await fetch(`/api/applications/${id}`, {
       method: 'DELETE',
+      credentials: 'include',
     });
 
     setApps((prev) => prev.filter((a) => a.id !== id));
@@ -86,6 +87,7 @@ export default function ApplicationsClient({ initialApps }: Props) {
   const handleStatusChange = async (id: string, newStatus: string) => {
     await fetch(`/api/applications/${id}`, {
       method: 'PUT',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus }),
     });
