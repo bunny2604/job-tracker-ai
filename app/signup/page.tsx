@@ -73,7 +73,6 @@ export default function SignupPage() {
           </p>
         )}
 
-        {/* EMAIL */}
         <div className="mb-4">
           <label className="text-sm font-bold text-gray-700">
             Email:
@@ -91,7 +90,6 @@ export default function SignupPage() {
           )}
         </div>
 
-        {/* PASSWORD */}
         <div className="mb-4">
           <label className="text-sm font-bold text-gray-700">
             Password:

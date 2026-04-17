@@ -6,7 +6,6 @@ type JwtPayload = {
   userId: string;
 };
 
-// ✅ UPDATE APPLICATION
 export async function PUT(
   req: Request,
   context: { params: Promise<{ id: string }> }
@@ -41,7 +40,6 @@ export async function PUT(
   }
 }
 
-// ✅ DELETE APPLICATION
 export async function DELETE(
   req: Request,
   context: { params: Promise<{ id: string }> }
