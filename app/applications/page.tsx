@@ -8,7 +8,6 @@ type JwtPayload = {
 };
 
 export default async function Page() {
-  // ✅ CORRECT: NO await here
   const headersList = headers();
 
   const cookieHeader = (await headersList).get('cookie') || '';

@@ -40,7 +40,6 @@ export default function ApplicationsClient({ initialApps }: Props) {
 
   const hasApps = apps.length > 0;
 
-  // ---------------- FILTER ----------------
   const filteredApps = apps.filter((app) => {
     const matchesSearch =
       app.company.toLowerCase().includes(search.toLowerCase()) ||
@@ -52,16 +51,14 @@ export default function ApplicationsClient({ initialApps }: Props) {
     return matchesSearch && matchesFilter;
   });
 
-  // ---------------- CHART ----------------
   const chartData = [
     { name: 'Applied', value: apps.filter(a => a.status === 'applied').length },
     { name: 'Interview', value: apps.filter(a => a.status === 'interview').length },
     { name: 'Rejected', value: apps.filter(a => a.status === 'rejected').length },
   ];
 
-  const COLORS = ['#3b82f6', '#6366f1', '#ef4444']; // blue + indigo + red
+  const COLORS = ['#3b82f6', '#6366f1', '#ef4444'];
 
-  // ---------------- CREATE ----------------
   const handleSubmit = async () => {
     const res = await fetch('/api/applications', {
       method: 'POST',
@@ -78,7 +75,6 @@ export default function ApplicationsClient({ initialApps }: Props) {
     }
   };
 
-  // ---------------- DELETE ----------------
   const handleDelete = async (id: string) => {
     await fetch(`/api/applications/${id}`, {
       method: 'DELETE',
@@ -87,7 +83,6 @@ export default function ApplicationsClient({ initialApps }: Props) {
     setApps((prev) => prev.filter((a) => a.id !== id));
   };
 
-  // ---------------- UPDATE ----------------
   const handleStatusChange = async (id: string, newStatus: string) => {
     await fetch(`/api/applications/${id}`, {
       method: 'PUT',
@@ -102,7 +97,6 @@ export default function ApplicationsClient({ initialApps }: Props) {
     );
   };
 
-  // ---------------- AI ----------------
   const generateInsight = async (app: Application) => {
     setLoadingId(app.id);
 
@@ -119,7 +113,6 @@ export default function ApplicationsClient({ initialApps }: Props) {
     setLoadingId(null);
   };
 
-  // ---------------- EXPORT ----------------
   const exportCSV = () => {
     const headers = ['Company', 'Role', 'Status'];
     const rows = apps.map((a) =>
@@ -156,7 +149,6 @@ export default function ApplicationsClient({ initialApps }: Props) {
         Job Applications Dashboard
       </h1>
 
-      {/* CHART */}
       {hasApps && (
         <div className="bg-blue-50 p-6 rounded-xl shadow mb-6 border border-blue-100">
           <div className="h-64">
@@ -174,7 +166,6 @@ export default function ApplicationsClient({ initialApps }: Props) {
         </div>
       )}
 
-      {/* SEARCH */}
       <div className="bg-blue-50 p-4 rounded-xl shadow mb-6 flex gap-3 border border-blue-100">
         <input
           className="border p-2 rounded w-full"
@@ -195,12 +186,9 @@ export default function ApplicationsClient({ initialApps }: Props) {
         </select>
       </div>
 
-      {/* FORM */}
-      {/* FORM */}
 <div className="bg-blue-50 p-6 rounded-xl shadow mb-10 border border-blue-100">
   <div className="grid md:grid-cols-3 gap-6">
 
-    {/* COMPANY */}
     <div className="flex flex-col gap-1">
       <label className="text-sm font-medium text-blue-900">
         Company
@@ -213,7 +201,6 @@ export default function ApplicationsClient({ initialApps }: Props) {
       />
     </div>
 
-    {/* ROLE */}
     <div className="flex flex-col gap-1">
       <label className="text-sm font-medium text-blue-900">
         Role
@@ -226,7 +213,6 @@ export default function ApplicationsClient({ initialApps }: Props) {
       />
     </div>
 
-    {/* STATUS */}
     <div className="flex flex-col gap-1">
       <label className="text-sm font-medium text-blue-900">
         Status
@@ -252,7 +238,6 @@ export default function ApplicationsClient({ initialApps }: Props) {
   </button>
 </div>
 
-      {/* EXPORT */}
       <button
         onClick={exportCSV}
         className="mb-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
@@ -260,7 +245,6 @@ export default function ApplicationsClient({ initialApps }: Props) {
         Export CSV
       </button>
 
-      {/* GRID */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
         {filteredApps.map((app) => (
@@ -308,7 +292,6 @@ export default function ApplicationsClient({ initialApps }: Props) {
         ))}
       </div>
 
-      {/* MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center">
 

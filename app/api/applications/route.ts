@@ -7,7 +7,6 @@ type JwtPayload = {
   userId: string;
 };
 
-// ✅ CREATE
 export async function POST(req: Request) {
   try {
     const cookieStore = cookies();
@@ -36,7 +35,6 @@ export async function POST(req: Request) {
   }
 }
 
-// ✅ READ
 export async function GET() {
   try {
     const cookieStore = cookies();

@@ -25,7 +25,6 @@ export async function POST(req: Request) {
 
     const res = NextResponse.json({ success: true });
 
-    // ✅ SET COOKIE (THIS IS MISSING IN YOUR CODE)
     res.cookies.set('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
